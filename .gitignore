@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build artifacts
+dist/
+build/
+pkg/
+target/
+
+# Logs & temp
+*.log
+.DS_Store
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Environment
+.env
+.env.local
