@@ -44,7 +44,7 @@ export const IsobarContours: React.FC<IsobarContoursProps> = ({
         </div>
         <button
           onClick={onToggleShowIsobars}
-          className={`whitespace-nowrap inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-sans transition-all cursor-pointer ${
+          className={`whitespace-nowrap inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-sans transition-colors cursor-pointer ${
             showIsobars
               ? 'border-purple-500/60 bg-purple-950/40 text-purple-300 shadow-[0_0_12px_rgba(168,85,247,0.3)]'
               : 'border-slate-800 bg-slate-900 text-slate-400'
@@ -68,7 +68,7 @@ export const IsobarContours: React.FC<IsobarContoursProps> = ({
             <button
               key={iso.level}
               onClick={() => onTargetPressureChange(iso.level)}
-              className={`flex flex-col items-start rounded-xl border p-2 text-left transition-all ${
+              className={`flex flex-col items-start rounded-xl border p-2 text-left transition-colors ${
                 Math.abs(targetPressureHpa - iso.level) < 1
                   ? 'border-purple-500 bg-purple-950/40 text-white shadow-[0_0_10px_rgba(168,85,247,0.25)]'
                   : 'border-slate-800 bg-slate-900/60 text-slate-400 hover:border-slate-700'

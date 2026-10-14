@@ -45,28 +45,28 @@ export const TelemetryInspector: React.FC<TelemetryInspectorProps> = ({ points, 
           <thead className="border-b border-slate-800 text-[10px] uppercase text-slate-400">
             <tr>
               <th className="py-2 px-2.5">
-                <button onClick={() => handleSort('entityId')} className="flex items-center gap-1 hover:text-white">
+                <button onClick={() => handleSort('entityId')} className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer select-none">
                   Entity ID <ArrowUpDown className="h-2.5 w-2.5" />
                 </button>
               </th>
               <th className="py-2 px-2.5">Callsign</th>
               <th className="py-2 px-2.5">
-                <button onClick={() => handleSort('latitude')} className="flex items-center gap-1 hover:text-white">
+                <button onClick={() => handleSort('latitude')} className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer select-none">
                   Coordinates <ArrowUpDown className="h-2.5 w-2.5" />
                 </button>
               </th>
               <th className="py-2 px-2.5">
-                <button onClick={() => handleSort('altitude')} className="flex items-center gap-1 hover:text-white">
+                <button onClick={() => handleSort('altitude')} className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer select-none">
                   Altitude <ArrowUpDown className="h-2.5 w-2.5" />
                 </button>
               </th>
               <th className="py-2 px-2.5">
-                <button onClick={() => handleSort('pressure')} className="flex items-center gap-1 hover:text-white">
+                <button onClick={() => handleSort('pressure')} className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer select-none">
                   Pressure (hPa) <ArrowUpDown className="h-2.5 w-2.5" />
                 </button>
               </th>
               <th className="py-2 px-2.5">
-                <button onClick={() => handleSort('velocity')} className="flex items-center gap-1 hover:text-white">
+                <button onClick={() => handleSort('velocity')} className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer select-none">
                   Speed <ArrowUpDown className="h-2.5 w-2.5" />
                 </button>
               </th>

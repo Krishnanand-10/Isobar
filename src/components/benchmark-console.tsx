@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Gauge, CheckCircle2, TrendingUp, HardDrive, ShieldCheck, Zap } from 'lucide-react';
 import { QueryBenchmarkResult, EngineStats } from '@/engine/types';
 
@@ -102,9 +101,8 @@ export const BenchmarkConsole: React.FC<BenchmarkConsoleProps> = ({ stats, bench
               <span className="text-emerald-300 font-bold">{benchmark.indexedExecutionTimeMs} ms</span>
             </div>
             <div className="h-2.5 w-full rounded-full bg-slate-800 overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${Math.min(100, Math.max(3, (benchmark.indexedExecutionTimeMs / benchmark.naiveScanExecutionTimeMs) * 100))}%` }}
+              <div
+                style={{ width: `${Math.min(100, Math.max(3, (benchmark.indexedExecutionTimeMs / benchmark.naiveScanExecutionTimeMs) * 100))}%` }}
                 className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full"
               />
             </div>
@@ -117,9 +115,8 @@ export const BenchmarkConsole: React.FC<BenchmarkConsoleProps> = ({ stats, bench
               <span className="text-rose-300">{benchmark.naiveScanExecutionTimeMs} ms</span>
             </div>
             <div className="h-2.5 w-full rounded-full bg-slate-800 overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: '100%' }}
+              <div
+                style={{ width: '100%' }}
                 className="h-full bg-gradient-to-r from-rose-500 to-red-400 rounded-full"
               />
             </div>

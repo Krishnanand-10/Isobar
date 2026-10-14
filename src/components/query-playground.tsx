@@ -63,7 +63,7 @@ export const QueryPlayground: React.FC<QueryPlaygroundProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={() => onEngineModeChange(engineMode === 'wasm' ? 'typescript' : 'wasm')}
-            className={`whitespace-nowrap inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-sans font-medium transition cursor-pointer select-none ${
+            className={`whitespace-nowrap inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-sans font-medium transition-colors cursor-pointer select-none ${
               engineMode === 'wasm'
                 ? 'border-emerald-500/50 bg-emerald-950/40 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.2)]'
                 : 'border-sky-500/40 bg-sky-950/40 text-sky-300'
@@ -154,10 +154,10 @@ export const QueryPlayground: React.FC<QueryPlaygroundProps> = ({
             <button
               key={p.sec}
               onClick={() => onTimeWindowChange(p.sec)}
-              className={`rounded-lg py-1.5 font-mono text-xs font-medium transition-all ${
+              className={`rounded-lg py-1.5 font-mono text-xs font-medium transition-colors border ${
                 timeWindowSec === p.sec
-                  ? 'border border-sky-500 bg-sky-500/20 text-sky-300 shadow-[0_0_10px_rgba(56,189,248,0.25)]'
-                  : 'border border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800/80 hover:text-slate-200'
+                  ? 'border-sky-500 bg-sky-500/20 text-sky-300 shadow-[0_0_10px_rgba(56,189,248,0.25)]'
+                  : 'border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-800/80 hover:text-slate-200'
               }`}
             >
               {p.label}
@@ -177,7 +177,7 @@ export const QueryPlayground: React.FC<QueryPlaygroundProps> = ({
         <div className="grid grid-cols-2 gap-2">
           <button
             onClick={() => onIndexingModeChange('kdtree')}
-            className={`flex flex-col items-start rounded-xl border p-2.5 text-left transition-all ${
+            className={`flex flex-col items-start rounded-xl border p-2.5 text-left transition-colors ${
               indexingMode === 'kdtree'
                 ? 'border-purple-500 bg-purple-950/30 text-white shadow-[0_0_15px_rgba(168,85,247,0.2)]'
                 : 'border-slate-800 bg-slate-900/60 text-slate-400 hover:border-slate-700'
@@ -188,7 +188,7 @@ export const QueryPlayground: React.FC<QueryPlaygroundProps> = ({
           </button>
           <button
             onClick={() => onIndexingModeChange('rtree')}
-            className={`flex flex-col items-start rounded-xl border p-2.5 text-left transition-all ${
+            className={`flex flex-col items-start rounded-xl border p-2.5 text-left transition-colors ${
               indexingMode === 'rtree'
                 ? 'border-purple-500 bg-purple-950/30 text-white shadow-[0_0_15px_rgba(168,85,247,0.2)]'
                 : 'border-slate-800 bg-slate-900/60 text-slate-400 hover:border-slate-700'
@@ -224,7 +224,7 @@ export const QueryPlayground: React.FC<QueryPlaygroundProps> = ({
         <div className="flex gap-2">
           <button
             onClick={onToggleStreaming}
-            className={`flex-1 flex items-center justify-center gap-2 rounded-xl py-2.5 font-mono text-xs font-bold transition-all ${
+            className={`flex-1 flex items-center justify-center gap-2 rounded-xl py-2.5 font-mono text-xs font-bold transition-colors ${
               isStreaming
                 ? 'bg-rose-500/20 border border-rose-500/50 text-rose-300 shadow-[0_0_15px_rgba(244,63,94,0.3)] hover:bg-rose-500/30'
                 : 'bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:bg-emerald-500/30'
@@ -254,7 +254,7 @@ export const QueryPlayground: React.FC<QueryPlaygroundProps> = ({
 
         <button
           onClick={onRunBenchmark}
-          className="w-full flex items-center justify-center gap-2 rounded-xl border border-amber-500/60 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 py-2.5 font-mono text-xs font-bold text-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.25)] hover:from-amber-500/30 hover:to-yellow-500/30 transition-all"
+          className="w-full flex items-center justify-center gap-2 rounded-xl border border-amber-500/60 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 py-2.5 font-mono text-xs font-bold text-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.25)] hover:from-amber-500/30 hover:to-yellow-500/30 transition-colors"
         >
           <Zap className="h-3.5 w-3.5 fill-current text-amber-400" />
           <span>Execute Microsecond Benchmark</span>

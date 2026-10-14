@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useMemo } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import { TelemetryPoint } from '@/engine/types';
 
 interface TelemetryRadarProps {
@@ -23,7 +23,6 @@ export const TelemetryRadar: React.FC<TelemetryRadarProps> = ({
   targetPressureHpa,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [hoveredPoint, setHoveredPoint] = useState<TelemetryPoint | null>(null);
 
   // Set of matched point entity IDs for rapid O(1) highlight lookup
   const matchedIds = useMemo(() => {
@@ -223,37 +222,6 @@ export const TelemetryRadar: React.FC<TelemetryRadarProps> = ({
     };
   }, [points, matchedIds, centerLat, centerLon, queryRadiusKm, radarRangeKm, showIsobars, targetPressureHpa]);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const cx = canvas.width / 2;
-    const cy = canvas.height / 2;
-    const radiusPx = Math.min(cx, cy) - 20;
-    const pxPerKm = radiusPx / radarRangeKm;
-
-    // Check if near any telemetry point
-    let nearest: TelemetryPoint | null = null;
-    let minD = 12; // 12 pixel snap radius
-
-    for (const pt of points) {
-      const kmX = (pt.longitude - centerLon) * 111.0 * Math.cos(centerLat * (Math.PI / 180));
-      const kmY = (centerLat - pt.latitude) * 111.0;
-      const px = cx + kmX * pxPerKm;
-      const py = cy + kmY * pxPerKm;
-
-      const d = Math.hypot(px - x, py - y);
-      if (d < minD) {
-        minD = d;
-        nearest = pt;
-      }
-    }
-    setHoveredPoint(nearest);
-  };
-
   return (
     <div className="relative flex flex-col items-center rounded-2xl border border-white/10 bg-slate-900/60 p-4 backdrop-blur-xl shadow-xl w-full">
       <div className="flex w-full items-center justify-between pb-3 border-b border-white/10 mb-2">
@@ -277,28 +245,8 @@ export const TelemetryRadar: React.FC<TelemetryRadarProps> = ({
           ref={canvasRef}
           width={560}
           height={560}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={() => setHoveredPoint(null)}
-          className="cursor-default block max-w-full h-auto select-none"
+          className="cursor-default block max-w-full h-auto select-none pointer-events-none"
         />
-
-        {/* Hover Tooltip */}
-        {hoveredPoint && (
-          <div className="pointer-events-none absolute bottom-4 left-4 rounded-lg border border-sky-500/40 bg-slate-900/90 p-3 font-mono text-xs text-slate-200 shadow-xl backdrop-blur-md">
-            <div className="font-bold text-sky-400 pb-1 border-b border-slate-700/60 flex items-center justify-between gap-4">
-              <span>{hoveredPoint.callsign ?? `ENT-${hoveredPoint.entityId}`}</span>
-              <span className="text-[10px] text-emerald-400 font-normal">SQUAWK 1200</span>
-            </div>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-1 pt-1.5 text-[11px]">
-              <div>Lat: <span className="text-white">{hoveredPoint.latitude.toFixed(4)}°</span></div>
-              <div>Lon: <span className="text-white">{hoveredPoint.longitude.toFixed(4)}°</span></div>
-              <div>Alt: <span className="text-white">{Math.round(hoveredPoint.altitude)} m</span></div>
-              <div>Pressure: <span className="text-purple-300">{hoveredPoint.pressure.toFixed(1)} hPa</span></div>
-              <div>Speed: <span className="text-white">{Math.round(hoveredPoint.velocity)} kts</span></div>
-              <div>Heading: <span className="text-white">{Math.round(hoveredPoint.heading)}°</span></div>
-            </div>
-          </div>
-        )}
       </div>
 
       <div className="mt-3 flex w-full items-center justify-between text-xs text-slate-400">

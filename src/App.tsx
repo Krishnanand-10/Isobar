@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
 import {
   Cpu,
   Wind,
@@ -21,8 +20,6 @@ import { TelemetryGenerator } from '@/engine/generator';
 import { TelemetryPoint, QueryBenchmarkResult, EngineStats } from '@/engine/types';
 
 export function App() {
-  const shouldReduceMotion = useReducedMotion();
-
   // Engine & Telemetry Generator
   const [engine] = useState(() => new IsobarEngine(100_000));
   const [generator] = useState(() => new TelemetryGenerator(150));
@@ -190,19 +187,19 @@ export function App() {
         <div className="hidden items-center gap-8 text-sm font-medium text-white/90 md:flex">
           <button
             onClick={() => { setViewMode('radar'); scrollToDashboard(); }}
-            className={`transition hover:text-white cursor-pointer ${viewMode === 'radar' ? 'text-white font-bold underline underline-offset-4' : ''}`}
+            className={`transition-colors hover:text-white cursor-pointer font-medium ${viewMode === 'radar' ? 'text-white underline underline-offset-4' : 'text-white/70'}`}
           >
             Radar
           </button>
           <button
             onClick={() => { setViewMode('isobars'); scrollToDashboard(); }}
-            className={`transition hover:text-white cursor-pointer ${viewMode === 'isobars' ? 'text-white font-bold underline underline-offset-4' : ''}`}
+            className={`transition-colors hover:text-white cursor-pointer font-medium ${viewMode === 'isobars' ? 'text-white underline underline-offset-4' : 'text-white/70'}`}
           >
             Isobars
           </button>
           <button
             onClick={() => { setViewMode('inspector'); scrollToDashboard(); }}
-            className={`transition hover:text-white cursor-pointer ${viewMode === 'inspector' ? 'text-white font-bold underline underline-offset-4' : ''}`}
+            className={`transition-colors hover:text-white cursor-pointer font-medium ${viewMode === 'inspector' ? 'text-white underline underline-offset-4' : 'text-white/70'}`}
           >
             Telemetry
           </button>
@@ -210,7 +207,7 @@ export function App() {
             href="https://github.com/Krishnanand-10/Isobar.git"
             target="_blank"
             rel="noreferrer"
-            className="transition hover:text-white"
+            className="text-white/70 transition-colors hover:text-white font-medium"
           >
             Docs
           </a>
@@ -227,7 +224,7 @@ export function App() {
             href="https://github.com/Krishnanand-10/Isobar.git"
             target="_blank"
             rel="noreferrer"
-            className="hidden text-sm font-medium text-white/90 transition hover:text-white sm:flex items-center gap-1.5"
+            className="hidden text-sm font-medium text-white/90 transition-colors hover:text-white sm:flex items-center gap-1.5"
           >
             <Github className="h-4 w-4" />
             <span>GitHub</span>
@@ -235,7 +232,7 @@ export function App() {
 
           <button
             onClick={scrollToDashboard}
-            className="rounded-full bg-white px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold text-sky-700 shadow-md transition hover:bg-white/90 cursor-pointer whitespace-nowrap"
+            className="rounded-full bg-white px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold text-sky-700 shadow-md transition-colors hover:bg-white/90 cursor-pointer whitespace-nowrap"
           >
             Live Engine
           </button>
@@ -263,7 +260,7 @@ export function App() {
         <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
           <button
             onClick={scrollToDashboard}
-            className="rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-sky-700 shadow-lg transition hover:bg-white/90 cursor-pointer flex items-center gap-2 select-none"
+            className="rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-sky-700 shadow-lg transition-colors hover:bg-white/90 cursor-pointer flex items-center gap-2 select-none border border-transparent"
           >
             <Radar className="h-4 w-4" />
             <span>Start Live Engine</span>
@@ -271,7 +268,7 @@ export function App() {
 
           <button
             onClick={handleRunBenchmark}
-            className="rounded-full bg-slate-900/30 text-white border border-white/30 px-6 py-2.5 text-sm font-semibold shadow-md backdrop-blur-sm transition hover:bg-slate-900/50 hover:border-white/50 cursor-pointer flex items-center gap-2 select-none"
+            className="rounded-full bg-slate-900/30 text-white border border-white/30 px-6 py-2.5 text-sm font-semibold shadow-md backdrop-blur-sm transition-colors hover:bg-slate-900/50 hover:border-white/50 cursor-pointer flex items-center gap-2 select-none"
           >
             <Zap className="h-4 w-4 text-amber-300 fill-current" />
             <span>Run Microsecond Benchmark</span>
@@ -326,14 +323,10 @@ export function App() {
       </div>
 
       {/* ============================================================== */}
-      {/* 4 & 7. APP PANEL (Single glass card with scroll reveal)        */}
+      {/* 4. APP PANEL (Static Glass Card, Fixed In Place)                */}
       {/* ============================================================== */}
-      <motion.div
+      <div
         id="dashboard-container"
-        initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
         className="relative z-10 mx-auto w-full max-w-6xl px-3 sm:px-6 md:px-8 pb-16"
       >
         <div className="rounded-3xl border border-white/15 bg-slate-900/50 backdrop-blur-2xl p-4 sm:p-6 shadow-2xl min-h-[640px]">
@@ -343,10 +336,10 @@ export function App() {
             <div className="flex items-center gap-1.5 sm:gap-2 font-sans text-xs sm:text-sm">
               <button
                 onClick={() => setViewMode('radar')}
-                className={`rounded-lg px-3.5 py-1.5 font-medium transition cursor-pointer select-none flex items-center gap-1.5 whitespace-nowrap ${
+                className={`rounded-lg px-3.5 py-1.5 font-medium transition-colors cursor-pointer select-none flex items-center gap-1.5 whitespace-nowrap border ${
                   viewMode === 'radar'
-                    ? 'bg-sky-500/20 text-sky-200 border border-sky-400/40 shadow-sm'
-                    : 'text-white/70 hover:text-white hover:bg-white/5'
+                    ? 'bg-sky-500/20 text-sky-200 border-sky-400/40 shadow-sm'
+                    : 'border-transparent text-white/70 hover:text-white hover:bg-white/5'
                 }`}
               >
                 <Radar className="h-3.5 w-3.5" />
@@ -355,10 +348,10 @@ export function App() {
 
               <button
                 onClick={() => setViewMode('isobars')}
-                className={`rounded-lg px-3.5 py-1.5 font-medium transition cursor-pointer select-none flex items-center gap-1.5 whitespace-nowrap ${
+                className={`rounded-lg px-3.5 py-1.5 font-medium transition-colors cursor-pointer select-none flex items-center gap-1.5 whitespace-nowrap border ${
                   viewMode === 'isobars'
-                    ? 'bg-purple-500/20 text-purple-200 border border-purple-400/40 shadow-sm'
-                    : 'text-white/70 hover:text-white hover:bg-white/5'
+                    ? 'bg-purple-500/20 text-purple-200 border-purple-400/40 shadow-sm'
+                    : 'border-transparent text-white/70 hover:text-white hover:bg-white/5'
                 }`}
               >
                 <Wind className="h-3.5 w-3.5" />
@@ -367,10 +360,10 @@ export function App() {
 
               <button
                 onClick={() => setViewMode('inspector')}
-                className={`rounded-lg px-3.5 py-1.5 font-medium transition cursor-pointer select-none flex items-center gap-1.5 whitespace-nowrap ${
+                className={`rounded-lg px-3.5 py-1.5 font-medium transition-colors cursor-pointer select-none flex items-center gap-1.5 whitespace-nowrap border ${
                   viewMode === 'inspector'
-                    ? 'bg-emerald-500/20 text-emerald-200 border border-emerald-400/40 shadow-sm'
-                    : 'text-white/70 hover:text-white hover:bg-white/5'
+                    ? 'bg-emerald-500/20 text-emerald-200 border-emerald-400/40 shadow-sm'
+                    : 'border-transparent text-white/70 hover:text-white hover:bg-white/5'
                 }`}
               >
                 <Terminal className="h-3.5 w-3.5" />
@@ -461,7 +454,7 @@ export function App() {
             )}
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* ============================================================== */}
       {/* FOOTER                                                         */}
