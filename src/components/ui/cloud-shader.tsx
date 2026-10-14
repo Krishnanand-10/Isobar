@@ -1,17 +1,23 @@
 "use client";
+
 import React, { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
-export interface CloudShaderProps {
+export type CloudShaderProps = {
   className?: string;
   contentClassName?: string;
   children?: React.ReactNode;
+  /** Animation speed multiplier. 1 = default drift. */
   speed?: number;
+  /** Number of clouds (1-6). */
   count?: number;
+  /** Cloud tint color (hex or rgb string). */
   cloudColor?: string;
+  /** Sky color at the top (hex or rgb string). */
   skyTopColor?: string;
+  /** Sky color at the bottom (hex or rgb string). */
   skyBottomColor?: string;
-}
+};
 
 const VERT = `
 attribute vec2 a_pos;
@@ -22,7 +28,7 @@ void main() {
 }
 `;
 
-// Original procedural cloud shader for Aceternity UI.
+// Original cloud shader for Aceternity UI.
 // Each cloud is an asymmetric envelope (dome top, flat base) filled with
 // domain-warped billow noise. A second density sample above the pixel
 // approximates self-shadowing. Clouds drift horizontally and wrap around.
@@ -212,23 +218,22 @@ function compile(gl: WebGLRenderingContext, type: number, source: string) {
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    console.error("Shader compile error:", gl.getShaderInfoLog(shader));
     gl.deleteShader(shader);
     return null;
   }
   return shader;
 }
 
-export const CloudShader: React.FC<CloudShaderProps> = ({
+export const CloudShader = ({
   className,
   contentClassName,
   children,
   speed = 1,
   count = 6,
   cloudColor = "#fbf8f2",
-  skyTopColor = "#1e3a8a",
-  skyBottomColor = "#0f172a",
-}) => {
+  skyTopColor = "#3876ba",
+  skyBottomColor = "#8cbfe8",
+}: CloudShaderProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const paramsRef = useRef({
     speed,
@@ -267,10 +272,7 @@ export const CloudShader: React.FC<CloudShaderProps> = ({
     gl.attachShader(program, frag);
     gl.bindAttribLocation(program, 0, "a_pos");
     gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      console.error("Program link error:", gl.getProgramInfoLog(program));
-      return;
-    }
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
     gl.useProgram(program);
 
     const buffer = gl.createBuffer();
@@ -278,7 +280,7 @@ export const CloudShader: React.FC<CloudShaderProps> = ({
     gl.bufferData(
       gl.ARRAY_BUFFER,
       new Float32Array([-1, -1, 3, -1, -1, 3]),
-      gl.STATIC_DRAW
+      gl.STATIC_DRAW,
     );
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
@@ -295,7 +297,7 @@ export const CloudShader: React.FC<CloudShaderProps> = ({
     let frame = 0;
     let running = true;
     const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
+      "(prefers-reduced-motion: reduce)",
     ).matches;
 
     const resize = () => {
@@ -351,7 +353,7 @@ export const CloudShader: React.FC<CloudShaderProps> = ({
     <div
       className={cn(
         "relative h-full min-h-80 w-full overflow-hidden",
-        className
+        className,
       )}
     >
       <canvas
@@ -359,7 +361,7 @@ export const CloudShader: React.FC<CloudShaderProps> = ({
         className="pointer-events-none absolute inset-0 h-full w-full"
       />
       {children ? (
-        <div className={cn("relative z-10 h-full w-full", contentClassName)}>
+        <div className={cn("relative z-10 flex h-full w-full", contentClassName || "items-center justify-center")}>
           {children}
         </div>
       ) : null}
