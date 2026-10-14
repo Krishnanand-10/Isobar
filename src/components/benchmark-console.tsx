@@ -12,89 +12,77 @@ export const BenchmarkConsole: React.FC<BenchmarkConsoleProps> = ({ stats, bench
   const mbUsed = (stats.memoryUsageBytes / (1024 * 1024)).toFixed(2);
 
   return (
-    <div className="flex flex-col gap-4 rounded-2xl border border-sky-500/20 bg-slate-950/80 p-5 backdrop-blur-xl shadow-2xl">
-      <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+    <div className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-slate-900/60 p-5 backdrop-blur-xl shadow-xl">
+      <div className="flex items-center justify-between border-b border-white/10 pb-3">
         <div className="flex items-center gap-2">
           <Gauge className="h-4 w-4 text-emerald-400" />
-          <h3 className="font-mono text-sm font-semibold uppercase tracking-wider text-white">
-            Algorithmic Rigor & Telemetry Telemetrics
+          <h3 className="font-sans text-sm font-semibold text-white whitespace-nowrap">
+            Benchmark analytics
           </h3>
         </div>
-        <div className="flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-950/30 px-2.5 py-0.5 font-mono text-[11px] text-emerald-400">
+        <div className="whitespace-nowrap inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-950/30 px-2.5 py-0.5 font-sans text-[11px] text-emerald-300">
           <ShieldCheck className="h-3 w-3" />
-          <span>ZERO-GC ACTIVE</span>
+          <span className="whitespace-nowrap font-medium">Zero-GC active</span>
         </div>
       </div>
 
       {/* Primary KPI Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {/* Latency KPI */}
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="rounded-xl border border-sky-500/20 bg-slate-900/60 p-3.5"
-        >
-          <div className="flex items-center justify-between text-slate-400 text-xs font-mono">
-            <span>Query Latency</span>
+        <div className="rounded-xl border border-white/10 bg-slate-900/40 p-3.5">
+          <div className="flex items-center justify-between text-slate-300 text-xs font-sans">
+            <span>Query latency</span>
             <Zap className="h-3.5 w-3.5 text-amber-400" />
           </div>
           <div className="mt-1 font-mono text-xl font-bold text-emerald-400">
             {benchmark ? `${benchmark.indexedExecutionTimeMs} ms` : '< 0.05 ms'}
           </div>
-          <div className="mt-1 text-[10px] font-mono text-slate-400">
-            Sub-millisecond spatial lookup
+          <div className="mt-1 text-[10px] font-sans text-slate-400">
+            Sub-millisecond lookup
           </div>
-        </motion.div>
+        </div>
 
         {/* Speedup KPI */}
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="rounded-xl border border-sky-500/20 bg-slate-900/60 p-3.5"
-        >
-          <div className="flex items-center justify-between text-slate-400 text-xs font-mono">
-            <span>Scan Speedup</span>
+        <div className="rounded-xl border border-white/10 bg-slate-900/40 p-3.5">
+          <div className="flex items-center justify-between text-slate-300 text-xs font-sans">
+            <span>Scan speedup</span>
             <TrendingUp className="h-3.5 w-3.5 text-emerald-400" />
           </div>
           <div className="mt-1 font-mono text-xl font-bold text-sky-400">
             {benchmark ? `${benchmark.speedup}x` : '42.8x'}
           </div>
-          <div className="mt-1 text-[10px] font-mono text-slate-400">
-            vs. Sequential Brute-Force Scan
+          <div className="mt-1 text-[10px] font-sans text-slate-400">
+            vs. Sequential scan
           </div>
-        </motion.div>
+        </div>
 
         {/* Ingestion Throughput */}
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="rounded-xl border border-sky-500/20 bg-slate-900/60 p-3.5"
-        >
-          <div className="flex items-center justify-between text-slate-400 text-xs font-mono">
-            <span>Ingest Rate</span>
+        <div className="rounded-xl border border-white/10 bg-slate-900/40 p-3.5">
+          <div className="flex items-center justify-between text-slate-300 text-xs font-sans">
+            <span>Ingest rate</span>
             <CheckCircle2 className="h-3.5 w-3.5 text-sky-400" />
           </div>
-          <div className="mt-1 font-mono text-xl font-bold text-purple-400">
+          <div className="mt-1 font-mono text-xl font-bold text-purple-300">
             {stats.ingestionRatePerSec.toLocaleString()} <span className="text-xs font-normal text-slate-400">p/s</span>
           </div>
-          <div className="mt-1 text-[10px] font-mono text-slate-400">
-            Batch Latency: {stats.lastIngestBatchLatencyMs}ms
+          <div className="mt-1 text-[10px] font-sans text-slate-400">
+            Batch latency: {stats.lastIngestBatchLatencyMs}ms
           </div>
-        </motion.div>
+        </div>
 
         {/* Memory Footprint */}
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="rounded-xl border border-sky-500/20 bg-slate-900/60 p-3.5"
-        >
-          <div className="flex items-center justify-between text-slate-400 text-xs font-mono">
-            <span>Columnar Buffer</span>
+        <div className="rounded-xl border border-white/10 bg-slate-900/40 p-3.5">
+          <div className="flex items-center justify-between text-slate-300 text-xs font-sans">
+            <span>Columnar buffer</span>
             <HardDrive className="h-3.5 w-3.5 text-slate-400" />
           </div>
           <div className="mt-1 font-mono text-xl font-bold text-slate-200">
             {mbUsed} <span className="text-xs font-normal text-slate-400">MB</span>
           </div>
-          <div className="mt-1 text-[10px] font-mono text-slate-400">
-            Fixed {stats.capacity.toLocaleString()} Capacity
+          <div className="mt-1 text-[10px] font-sans text-slate-400">
+            Fixed {stats.capacity.toLocaleString()} capacity
           </div>
-        </motion.div>
+        </div>
       </div>
 
       {/* Latency Comparison Graph */}

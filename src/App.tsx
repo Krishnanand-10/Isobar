@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import {
   Cpu,
   Wind,
@@ -20,6 +21,8 @@ import { TelemetryGenerator } from '@/engine/generator';
 import { TelemetryPoint, QueryBenchmarkResult, EngineStats } from '@/engine/types';
 
 export function App() {
+  const shouldReduceMotion = useReducedMotion();
+
   // Engine & Telemetry Generator
   const [engine] = useState(() => new IsobarEngine(100_000));
   const [generator] = useState(() => new TelemetryGenerator(150));
@@ -164,17 +167,17 @@ export function App() {
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-slate-950 font-sans selection:bg-sky-500/30 selection:text-sky-200">
       {/* ============================================================== */}
-      {/* CLOUD MOTION FRAME: EXACT MATCH IN OVERALL SCREEN              */}
+      {/* CLOUD MOTION FRAME: UNTOUCHED COMPONENT & ANIMATION LOOP       */}
       {/* ============================================================== */}
       <CloudShader className="absolute inset-0 pointer-events-none" />
 
-      {/* Subtle atmospheric tint */}
+      {/* Subtle atmospheric gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-slate-950/80 pointer-events-none" />
 
       {/* ============================================================== */}
-      {/* NAVBAR (Exact Aceternity Motion Frame styling)                 */}
+      {/* NAVBAR                                                         */}
       {/* ============================================================== */}
-      <nav className="relative z-20 mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 md:px-8">
+      <nav className="relative z-20 mx-auto flex w-full max-w-7xl items-center justify-between px-3 py-3 sm:px-6 md:px-8 select-none">
         <div className="flex items-center gap-2">
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-white/90 text-sm font-bold text-sky-700 shadow-sm">
             I
@@ -213,10 +216,11 @@ export function App() {
           </a>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-1.5 rounded-full border border-white/30 bg-black/30 backdrop-blur-md px-3 py-1 font-mono text-xs text-white/90 shadow-sm">
-            <Cpu className="h-3.5 w-3.5 text-sky-300" />
-            <span>{engineMode.toUpperCase()}</span>
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* 5. WASM (Zero-Copy) single-line badge */}
+          <div className="whitespace-nowrap inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-black/30 backdrop-blur-md px-2.5 py-1 text-[11px] sm:text-xs text-white/90 shadow-sm font-sans">
+            <Cpu className="h-3 w-3 text-sky-300" />
+            <span className="whitespace-nowrap font-medium">{engineMode === 'wasm' ? 'WASM (Zero-Copy)' : 'Strict TypedArray'}</span>
           </div>
 
           <a
@@ -231,7 +235,7 @@ export function App() {
 
           <button
             onClick={scrollToDashboard}
-            className="rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-sky-700 shadow-md transition hover:bg-white/90 cursor-pointer"
+            className="rounded-full bg-white px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold text-sky-700 shadow-md transition hover:bg-white/90 cursor-pointer whitespace-nowrap"
           >
             Live Engine
           </button>
@@ -239,22 +243,27 @@ export function App() {
       </nav>
 
       {/* ============================================================== */}
-      {/* HERO (Exact Aceternity Motion Frame styling)                   */}
+      {/* 1 & 2. HERO SECTION                                            */}
       {/* ============================================================== */}
-      <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center px-4 pt-12 text-center md:pt-20">
+      <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center px-4 pt-10 text-center md:pt-16 select-none">
+        {/* Faint radial gradient scrim behind the text block only */}
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(10,30,60,0.45)_0%,transparent_75%)] blur-2xl pointer-events-none" />
+
         <h1 className="text-4xl font-bold tracking-tight text-white drop-shadow-md md:text-6xl lg:text-7xl font-sans">
           Telemetry above <br className="hidden md:block" /> the clouds
         </h1>
 
-        <p className="mt-6 max-w-2xl text-base text-white/90 drop-shadow-sm md:text-lg">
+        {/* 1. Subtitle: pure white with soft text-shadow (0 1px 12px rgba(10,30,60,.35)) */}
+        <p className="mt-5 max-w-2xl text-base text-white [text-shadow:0_1px_12px_rgba(10,30,60,0.35)] md:text-lg font-sans leading-relaxed">
           Isobar gives your telemetry stream flat columnar circular ring buffers,
           sub-millisecond KD-Tree spatial indexing, and zero GC spikes in Rust WebAssembly.
         </p>
 
+        {/* 2. Buttons: "Start Live Engine" (white primary), "Run Microsecond Benchmark" (dark translucent slate-900/30) */}
         <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
           <button
             onClick={scrollToDashboard}
-            className="rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-sky-700 shadow-lg transition hover:bg-white/90 cursor-pointer flex items-center gap-2"
+            className="rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-sky-700 shadow-lg transition hover:bg-white/90 cursor-pointer flex items-center gap-2 select-none"
           >
             <Radar className="h-4 w-4" />
             <span>Start Live Engine</span>
@@ -262,90 +271,116 @@ export function App() {
 
           <button
             onClick={handleRunBenchmark}
-            className="rounded-full border border-white/40 bg-white/10 px-6 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20 cursor-pointer flex items-center gap-2"
+            className="rounded-full bg-slate-900/30 text-white border border-white/30 px-6 py-2.5 text-sm font-semibold shadow-md backdrop-blur-sm transition hover:bg-slate-900/50 hover:border-white/50 cursor-pointer flex items-center gap-2 select-none"
           >
             <Zap className="h-4 w-4 text-amber-300 fill-current" />
             <span>Run Microsecond Benchmark</span>
           </button>
         </div>
 
-        <p className="mt-4 text-xs text-white/80 flex items-center gap-2">
+        {/* 1. Small feature line: pure white with soft text-shadow (0 1px 12px rgba(10,30,60,.35)) */}
+        <p className="mt-4 text-xs text-white [text-shadow:0_1px_12px_rgba(10,30,60,0.35)] flex items-center justify-center flex-wrap gap-2 font-sans">
           <span>Rust & WebAssembly Pipeline</span>
-          <span>&middot;</span>
+          <span className="opacity-60">&middot;</span>
           <span>Zero-Heap JS Boundary</span>
-          <span>&middot;</span>
-          <span>26.6M pts/sec</span>
+          <span className="opacity-60">&middot;</span>
+          <span className="font-mono">26.6M pts/sec</span>
         </p>
       </div>
 
       {/* ============================================================== */}
-      {/* DASHBOARD CONTAINER (Exact Aceternity Glass Frame)             */}
+      {/* 3. STAT STRIP (3 Glass Cards)                                  */}
       {/* ============================================================== */}
-      <div
+      <div className="relative z-10 mx-auto my-6 sm:my-8 w-full max-w-4xl px-3 sm:px-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 select-none">
+          {/* Card 1: Ingest */}
+          <div className="rounded-2xl border border-white/15 bg-slate-900/40 p-4 sm:p-5 backdrop-blur-xl shadow-lg text-center flex flex-col items-center justify-center">
+            <span className="font-mono text-2xl sm:text-3xl font-bold text-white tabular-nums tracking-tight">
+              26.6M pts/s
+            </span>
+            <span className="text-xs text-white/70 uppercase tracking-wider mt-1 font-sans font-medium">
+              Ingest
+            </span>
+          </div>
+
+          {/* Card 2: Query Latency */}
+          <div className="rounded-2xl border border-white/15 bg-slate-900/40 p-4 sm:p-5 backdrop-blur-xl shadow-lg text-center flex flex-col items-center justify-center">
+            <span className="font-mono text-2xl sm:text-3xl font-bold text-sky-300 tabular-nums tracking-tight">
+              0.19 ms
+            </span>
+            <span className="text-xs text-white/70 uppercase tracking-wider mt-1 font-sans font-medium">
+              Query latency
+            </span>
+          </div>
+
+          {/* Card 3: Points Indexed */}
+          <div className="rounded-2xl border border-white/15 bg-slate-900/40 p-4 sm:p-5 backdrop-blur-xl shadow-lg text-center flex flex-col items-center justify-center">
+            <span className="font-mono text-2xl sm:text-3xl font-bold text-emerald-300 tabular-nums tracking-tight">
+              {stats.count > 0 ? stats.count.toLocaleString() : '80,500'}
+            </span>
+            <span className="text-xs text-white/70 uppercase tracking-wider mt-1 font-sans font-medium">
+              Points indexed
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* ============================================================== */}
+      {/* 4 & 7. APP PANEL (Single glass card with scroll reveal)        */}
+      {/* ============================================================== */}
+      <motion.div
         id="dashboard-container"
-        className="relative z-10 mx-auto mt-12 w-full max-w-6xl px-4 pb-16 md:mt-16 md:px-8"
+        initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="relative z-10 mx-auto w-full max-w-6xl px-3 sm:px-6 md:px-8 pb-16"
       >
-        <div className="rounded-2xl border border-white/30 bg-white/15 p-2 shadow-2xl backdrop-blur-md md:rounded-[2rem] md:p-3">
-          {/* Top Frame Control Bar */}
-          <div className="mb-2 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/20 bg-slate-950/60 p-3 backdrop-blur-md">
-            {/* View Switcher */}
-            <div className="flex items-center gap-1.5 font-mono text-xs">
+        <div className="rounded-3xl border border-white/15 bg-slate-900/50 backdrop-blur-2xl p-4 sm:p-6 shadow-2xl min-h-[640px]">
+          {/* Top Frame Control Bar (Headings shortened to sentence case, stats moved to stat strip) */}
+          <div className="mb-6 flex items-center justify-between border-b border-white/10 pb-3">
+            {/* 5. Shortened Sentence-Case Sans-Serif View Tabs */}
+            <div className="flex items-center gap-1.5 sm:gap-2 font-sans text-xs sm:text-sm">
               <button
                 onClick={() => setViewMode('radar')}
-                className={`rounded-lg px-3 py-1.5 font-semibold transition cursor-pointer flex items-center gap-1.5 ${
+                className={`rounded-lg px-3.5 py-1.5 font-medium transition cursor-pointer select-none flex items-center gap-1.5 whitespace-nowrap ${
                   viewMode === 'radar'
-                    ? 'bg-sky-500/30 text-sky-300 border border-sky-400/50 shadow-sm'
-                    : 'text-white/80 hover:text-white hover:bg-white/10'
+                    ? 'bg-sky-500/20 text-sky-200 border border-sky-400/40 shadow-sm'
+                    : 'text-white/70 hover:text-white hover:bg-white/5'
                 }`}
               >
                 <Radar className="h-3.5 w-3.5" />
-                <span>Geospatial Radar</span>
+                <span>Radar</span>
               </button>
 
               <button
                 onClick={() => setViewMode('isobars')}
-                className={`rounded-lg px-3 py-1.5 font-semibold transition cursor-pointer flex items-center gap-1.5 ${
+                className={`rounded-lg px-3.5 py-1.5 font-medium transition cursor-pointer select-none flex items-center gap-1.5 whitespace-nowrap ${
                   viewMode === 'isobars'
-                    ? 'bg-purple-500/30 text-purple-300 border border-purple-400/50 shadow-sm'
-                    : 'text-white/80 hover:text-white hover:bg-white/10'
+                    ? 'bg-purple-500/20 text-purple-200 border border-purple-400/40 shadow-sm'
+                    : 'text-white/70 hover:text-white hover:bg-white/5'
                 }`}
               >
                 <Wind className="h-3.5 w-3.5" />
-                <span>Atmospheric Isobars</span>
+                <span>Isobars</span>
               </button>
 
               <button
                 onClick={() => setViewMode('inspector')}
-                className={`rounded-lg px-3 py-1.5 font-semibold transition cursor-pointer flex items-center gap-1.5 ${
+                className={`rounded-lg px-3.5 py-1.5 font-medium transition cursor-pointer select-none flex items-center gap-1.5 whitespace-nowrap ${
                   viewMode === 'inspector'
-                    ? 'bg-emerald-500/30 text-emerald-300 border border-emerald-400/50 shadow-sm'
-                    : 'text-white/80 hover:text-white hover:bg-white/10'
+                    ? 'bg-emerald-500/20 text-emerald-200 border border-emerald-400/40 shadow-sm'
+                    : 'text-white/70 hover:text-white hover:bg-white/5'
                 }`}
               >
                 <Terminal className="h-3.5 w-3.5" />
-                <span>Live Telemetry</span>
+                <span>Telemetry</span>
               </button>
-            </div>
-
-            {/* Quick Engine KPI readout */}
-            <div className="flex items-center gap-3 font-mono text-xs text-white/90">
-              <div className="flex items-center gap-1.5">
-                <span className="text-white/60 text-[10px]">INGEST:</span>
-                <span className="font-bold text-emerald-300">26.6M pts/s</span>
-              </div>
-              <div className="border-l border-white/20 pl-3 flex items-center gap-1.5">
-                <span className="text-white/60 text-[10px]">LATENCY:</span>
-                <span className="font-bold text-sky-300">&lt; 0.19 ms</span>
-              </div>
-              <div className="border-l border-white/20 pl-3 hidden sm:flex items-center gap-1.5">
-                <span className="text-white/60 text-[10px]">TOTAL:</span>
-                <span className="font-bold text-white">{stats.count.toLocaleString()}</span>
-              </div>
             </div>
           </div>
 
-          {/* View Mode Contents (Fixed minimum height to prevent jumping) */}
-          <div className="rounded-xl border border-black/10 bg-slate-950/80 p-4 shadow-lg md:rounded-3xl md:p-6 overflow-hidden min-h-[640px]">
+          {/* View Mode Contents */}
+          <div>
             {viewMode === 'radar' && (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -357,15 +392,6 @@ export function App() {
                       centerLat={centerLat}
                       centerLon={centerLon}
                       queryRadiusKm={queryRadiusKm}
-                      onSelectCenter={(lat, lon) => {
-                        setCenterLat(lat);
-                        setCenterLon(lon);
-                        executeQueries();
-                      }}
-                      onRadiusChange={(r) => {
-                        setQueryRadiusKm(r);
-                        executeQueries();
-                      }}
                       showIsobars={showIsobars}
                       targetPressureHpa={targetPressureHpa}
                     />
@@ -435,20 +461,20 @@ export function App() {
             )}
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* ============================================================== */}
       {/* FOOTER                                                         */}
       {/* ============================================================== */}
-      <footer className="relative z-10 border-t border-white/10 bg-slate-950/80 backdrop-blur-md py-8">
-        <div className="mx-auto max-w-7xl px-4 flex flex-col sm:flex-row items-center justify-between text-xs font-mono text-white/70 gap-4">
+      <footer className="relative z-10 border-t border-white/10 bg-slate-950/80 backdrop-blur-md py-8 select-none">
+        <div className="mx-auto max-w-7xl px-4 flex flex-col sm:flex-row items-center justify-between text-xs font-sans text-white/70 gap-4">
           <div className="flex items-center gap-2">
             <span className="font-bold text-white">Isobar</span>
             <span>&middot;</span>
-            <span>High-Throughput In-Memory Telemetry Engine</span>
+            <span>High-throughput in-memory telemetry engine</span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-emerald-400">Zero-GC Flat Ring Buffers</span>
+            <span className="text-emerald-400 font-sans">Zero-GC flat ring buffers</span>
             <span>&middot;</span>
             <a
               href="https://github.com/Krishnanand-10/Isobar.git"

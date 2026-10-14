@@ -255,20 +255,20 @@ export const TelemetryRadar: React.FC<TelemetryRadarProps> = ({
   };
 
   return (
-    <div className="relative flex flex-col items-center rounded-2xl border border-sky-500/20 bg-slate-950/80 p-4 backdrop-blur-xl shadow-2xl">
-      <div className="flex w-full items-center justify-between pb-3">
+    <div className="relative flex flex-col items-center rounded-2xl border border-white/10 bg-slate-900/60 p-4 backdrop-blur-xl shadow-xl w-full">
+      <div className="flex w-full items-center justify-between pb-3 border-b border-white/10 mb-2">
         <div className="flex items-center gap-2">
-          <span className="relative flex h-3 w-3">
+          <span className="relative flex h-2.5 w-2.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-500"></span>
+            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
           </span>
-          <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-sky-400">
-            Geospatial Radar Screen (ADS-B + Isobar Telemetry)
+          <h3 className="font-sans text-sm font-semibold text-white whitespace-nowrap">
+            Radar
           </h3>
         </div>
-        <div className="font-mono text-xs text-slate-400">
-          Range: <span className="text-sky-300 font-bold">{radarRangeKm} km</span> | Active Pings:{' '}
-          <span className="text-emerald-400 font-bold">{points.length}</span>
+        <div className="font-sans text-xs text-slate-300">
+          Range: <span className="font-mono text-sky-300 font-semibold">{radarRangeKm} km</span> | Active pings:{' '}
+          <span className="font-mono text-emerald-400 font-semibold">{points.length}</span>
         </div>
       </div>
 

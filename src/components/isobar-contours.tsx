@@ -34,24 +34,24 @@ export const IsobarContours: React.FC<IsobarContoursProps> = ({
   const equivAltFt = Math.round(equivAltM * 3.28084);
 
   return (
-    <div className="flex flex-col gap-4 rounded-2xl border border-sky-500/20 bg-slate-950/80 p-5 backdrop-blur-xl shadow-2xl">
-      <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+    <div className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-slate-900/60 p-5 backdrop-blur-xl shadow-xl">
+      <div className="flex items-center justify-between border-b border-white/10 pb-3">
         <div className="flex items-center gap-2">
           <Wind className="h-4 w-4 text-purple-400" />
-          <h3 className="font-mono text-sm font-semibold uppercase tracking-wider text-white">
-            Atmospheric Isobar Pressure Extraction
+          <h3 className="font-sans text-sm font-semibold text-white whitespace-nowrap">
+            Isobar contours
           </h3>
         </div>
         <button
           onClick={onToggleShowIsobars}
-          className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-mono transition-all ${
+          className={`whitespace-nowrap inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-sans transition-all cursor-pointer ${
             showIsobars
               ? 'border-purple-500/60 bg-purple-950/40 text-purple-300 shadow-[0_0_12px_rgba(168,85,247,0.3)]'
               : 'border-slate-800 bg-slate-900 text-slate-400'
           }`}
         >
           <Eye className="h-3 w-3" />
-          <span>{showIsobars ? 'Isobars Visible' : 'Isobars Hidden'}</span>
+          <span className="whitespace-nowrap">{showIsobars ? 'Isobars visible' : 'Isobars hidden'}</span>
         </button>
       </div>
 

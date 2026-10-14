@@ -27,16 +27,16 @@ export const TelemetryInspector: React.FC<TelemetryInspectorProps> = ({ points, 
   }).slice(0, maxDisplay);
 
   return (
-    <div className="flex flex-col rounded-2xl border border-sky-500/20 bg-slate-950/80 p-5 backdrop-blur-xl shadow-2xl">
-      <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+    <div className="flex flex-col rounded-2xl border border-white/10 bg-slate-900/60 p-5 backdrop-blur-xl shadow-xl">
+      <div className="flex items-center justify-between border-b border-white/10 pb-3">
         <div className="flex items-center gap-2">
           <Terminal className="h-4 w-4 text-emerald-400" />
-          <h3 className="font-mono text-sm font-semibold uppercase tracking-wider text-white">
-            Live Columnar Telemetry Stream Inspector
+          <h3 className="font-sans text-sm font-semibold text-white whitespace-nowrap">
+            Telemetry inspector
           </h3>
         </div>
-        <div className="font-mono text-xs text-slate-400">
-          Showing <span className="text-emerald-400 font-bold">{sortedPoints.length}</span> of {points.length} records
+        <div className="font-sans text-xs text-slate-300">
+          Showing <span className="font-mono text-emerald-400 font-semibold">{sortedPoints.length}</span> of <span className="font-mono">{points.length}</span> records
         </div>
       </div>
 

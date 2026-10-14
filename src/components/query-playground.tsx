@@ -52,42 +52,42 @@ export const QueryPlayground: React.FC<QueryPlaygroundProps> = ({
   ];
 
   return (
-    <div className="flex flex-col gap-5 rounded-2xl border border-sky-500/20 bg-slate-950/80 p-5 backdrop-blur-xl shadow-2xl">
-      <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+    <div className="flex flex-col gap-5 rounded-2xl border border-white/10 bg-slate-900/60 p-5 backdrop-blur-xl shadow-xl">
+      <div className="flex items-center justify-between border-b border-white/10 pb-3">
         <div className="flex items-center gap-2">
           <Sliders className="h-4 w-4 text-sky-400" />
-          <h3 className="font-mono text-sm font-semibold uppercase tracking-wider text-white">
-            Spatial-Temporal Query Engine
+          <h3 className="font-sans text-sm font-semibold text-white whitespace-nowrap">
+            Query engine
           </h3>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => onEngineModeChange(engineMode === 'wasm' ? 'typescript' : 'wasm')}
-            className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-mono font-medium transition-all ${
+            className={`whitespace-nowrap inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-sans font-medium transition cursor-pointer select-none ${
               engineMode === 'wasm'
-                ? 'border-emerald-500/50 bg-emerald-950/40 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.3)]'
+                ? 'border-emerald-500/50 bg-emerald-950/40 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.2)]'
                 : 'border-sky-500/40 bg-sky-950/40 text-sky-300'
             }`}
           >
             <Cpu className="h-3 w-3" />
-            <span>{engineMode === 'wasm' ? 'WASM (Zero-Copy)' : 'Strict TypedArray'}</span>
+            <span className="whitespace-nowrap font-sans">{engineMode === 'wasm' ? 'WASM (Zero-Copy)' : 'Strict TypedArray'}</span>
           </button>
         </div>
       </div>
 
       {/* Spatial Center Controls */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between text-xs font-mono text-slate-300">
+      <div className="space-y-3 font-sans">
+        <div className="flex items-center justify-between text-xs text-slate-300">
           <span className="flex items-center gap-1.5 text-sky-400">
-            <Compass className="h-3.5 w-3.5" /> Focal Coordinates
+            <Compass className="h-3.5 w-3.5" /> Focal coordinates
           </span>
-          <span className="text-slate-400">
-            {centerLat.toFixed(4)}°N, {centerLon.toFixed(4)}°E
+          <span className="font-mono text-slate-200">
+            {centerLat.toFixed(4)}°N, {centerLon.toFixed(4)}°W
           </span>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="text-[11px] font-mono text-slate-400">Latitude (-90 to +90)</label>
+            <label className="text-[11px] text-slate-300 font-sans">Latitude (-90 to +90)</label>
             <input
               type="number"
               step="0.01"
@@ -97,7 +97,7 @@ export const QueryPlayground: React.FC<QueryPlaygroundProps> = ({
             />
           </div>
           <div>
-            <label className="text-[11px] font-mono text-slate-400">Longitude (-180 to +180)</label>
+            <label className="text-[11px] text-slate-300 font-sans">Longitude (-180 to +180)</label>
             <input
               type="number"
               step="0.01"
@@ -110,10 +110,10 @@ export const QueryPlayground: React.FC<QueryPlaygroundProps> = ({
       </div>
 
       {/* Spatial Radius Slider */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between text-xs font-mono">
-          <span className="text-slate-300">Query Radius R</span>
-          <span className="font-bold text-amber-400">{queryRadiusKm} km</span>
+      <div className="space-y-2 font-sans">
+        <div className="flex items-center justify-between text-xs">
+          <span className="text-slate-300">Query radius</span>
+          <span className="font-mono text-sky-300 font-semibold">{queryRadiusKm} km</span>
         </div>
         <input
           type="range"
