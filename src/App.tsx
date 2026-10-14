@@ -13,8 +13,11 @@ import {
   FileCode2,
   Gauge,
   Layers,
+  SunMedium,
+  Moon,
+  CloudLightning,
 } from 'lucide-react';
-import { CloudMotionFrame } from '@/components/ui/cloud-motion-frame';
+import { CloudShader } from '@/components/ui/cloud-shader';
 import { TelemetryRadar } from '@/components/telemetry-radar';
 import { QueryPlayground } from '@/components/query-playground';
 import { BenchmarkConsole } from '@/components/benchmark-console';
@@ -23,6 +26,46 @@ import { TelemetryInspector } from '@/components/telemetry-inspector';
 import { IsobarEngine } from '@/engine/engine';
 import { TelemetryGenerator } from '@/engine/generator';
 import { TelemetryPoint, QueryBenchmarkResult, EngineStats } from '@/engine/types';
+
+// Atmospheric shader presets
+const SHADER_PRESETS = [
+  {
+    name: 'Troposphere Azure',
+    icon: Wind,
+    speed: 0.8,
+    count: 6,
+    cloudColor: '#f1f5f9',
+    skyTopColor: '#0c4a6e',
+    skyBottomColor: '#030712',
+  },
+  {
+    name: 'Stratosphere Flight',
+    icon: Moon,
+    speed: 0.5,
+    count: 4,
+    cloudColor: '#93c5fd',
+    skyTopColor: '#172554',
+    skyBottomColor: '#020617',
+  },
+  {
+    name: 'Barometric Storm Front',
+    icon: CloudLightning,
+    speed: 1.3,
+    count: 6,
+    cloudColor: '#94a3b8',
+    skyTopColor: '#1e293b',
+    skyBottomColor: '#090d16',
+  },
+  {
+    name: 'Solar Sunrise',
+    icon: SunMedium,
+    speed: 0.7,
+    count: 5,
+    cloudColor: '#fed7aa',
+    skyTopColor: '#1e3a8a',
+    skyBottomColor: '#7c2d12',
+  },
+];
 
 export function App() {
   // Engine & Telemetry Generator
@@ -46,6 +89,12 @@ export function App() {
   const [targetPressureHpa, setTargetPressureHpa] = useState(700);
   const [toleranceHpa, setToleranceHpa] = useState(25);
   const [showIsobars, setShowIsobars] = useState(true);
+
+  // Shader configuration
+  const [selectedPresetIdx, setSelectedPresetIdx] = useState(0);
+  const [shaderSpeed, setShaderSpeed] = useState(0.8);
+  const [shaderCount, setShaderCount] = useState(6);
+  const activePreset = SHADER_PRESETS[selectedPresetIdx];
 
   // Live telemetry datasets
   const [radarPoints, setRadarPoints] = useState<TelemetryPoint[]>([]);
@@ -171,106 +220,149 @@ export function App() {
   return (
     <div className="relative min-h-screen w-full bg-slate-950 text-slate-100 selection:bg-sky-500/30 selection:text-sky-200 overflow-x-hidden font-sans">
       {/* ============================================================== */}
-      {/* 1. EXACT CLOUD MOTION FRAME (Aceternity UI)                    */}
+      {/* CLOUD SHADER MOTION FRAME (Aceternity UI)                      */}
       {/* ============================================================== */}
-      <CloudMotionFrame speed={0.9} showWing={true}>
-        {/* Navbar inside the Cloud Motion Frame */}
-        <nav className="relative z-30 mx-auto flex w-full max-w-7xl items-center justify-between px-6 pt-6 md:px-14 md:pt-10">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/20 bg-black/40 backdrop-blur-md shadow-xl">
-              <Compass className="h-5 w-5 text-sky-300 animate-spin" style={{ animationDuration: '30s' }} />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
-                  ISOBAR<span className="text-sky-300">.DB</span>
-                </span>
-                <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-white/90 backdrop-blur-md">
-                  v0.1.0-WASM
-                </span>
+      <div className="relative w-full h-[540px] md:h-[620px] overflow-hidden border-b border-sky-500/20 shadow-2xl">
+        {/* Procedural WebGL Clouds Canvas */}
+        <CloudShader
+          speed={shaderSpeed}
+          count={shaderCount}
+          cloudColor={activePreset.cloudColor}
+          skyTopColor={activePreset.skyTopColor}
+          skyBottomColor={activePreset.skyBottomColor}
+          className="absolute inset-0 h-full w-full"
+        />
+
+        {/* Atmospheric gradient overlay for contrast */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-slate-950 pointer-events-none" />
+
+        {/* Content Overlaid on Cloud Motion Frame */}
+        <div className="relative z-10 mx-auto max-w-7xl h-full flex flex-col justify-between px-4 py-6 sm:px-6 lg:px-8">
+          {/* Top Navbar */}
+          <nav className="flex items-center justify-between border-b border-white/10 pb-4 backdrop-blur-xs">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/20 bg-black/40 backdrop-blur-md shadow-xl">
+                <Compass className="h-5 w-5 text-sky-300 animate-spin" style={{ animationDuration: '30s' }} />
               </div>
-              <p className="font-mono text-[11px] text-white/80 hidden sm:block">
-                In-Memory Telemetry Engine
-              </p>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
+                    ISOBAR<span className="text-sky-300">.DB</span>
+                  </span>
+                  <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-white/90 backdrop-blur-md">
+                    v0.1.0-WASM
+                  </span>
+                </div>
+                <p className="font-mono text-[11px] text-white/80 hidden sm:block">
+                  In-Memory Telemetry Engine
+                </p>
+              </div>
             </div>
-          </div>
 
-          <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-1.5 rounded-full border border-white/20 bg-black/30 backdrop-blur-md px-3 py-1 font-mono text-xs text-white/90">
-              <Cpu className="h-3.5 w-3.5 text-sky-300" />
-              <span>Engine: <strong className="text-sky-300 uppercase">{engineMode}</strong></span>
+            <div className="flex items-center gap-2.5">
+              <div className="hidden sm:flex items-center gap-1.5 rounded-full border border-white/20 bg-black/40 backdrop-blur-md px-3 py-1 font-mono text-xs text-white/90 shadow-md">
+                <Cpu className="h-3.5 w-3.5 text-sky-300" />
+                <span>Engine: <strong className="text-sky-300 uppercase">{engineMode}</strong></span>
+              </div>
+              <div className="hidden md:flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-950/50 backdrop-blur-md px-3 py-1 font-mono text-xs text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.2)]">
+                <ShieldCheck className="h-3.5 w-3.5" />
+                <span>Zero-GC Memory</span>
+              </div>
+              <a
+                href="https://github.com/Krishnanand-10/Isobar.git"
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1.5 rounded-full bg-white px-4 py-1.5 font-mono text-xs font-semibold text-black transition hover:bg-white/90 shadow-lg cursor-pointer"
+              >
+                <Github className="h-3.5 w-3.5" />
+                <span>GitHub</span>
+              </a>
             </div>
-            <div className="hidden md:flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-950/40 backdrop-blur-md px-3 py-1 font-mono text-xs text-emerald-300">
-              <ShieldCheck className="h-3.5 w-3.5" />
-              <span>Zero-GC Memory</span>
-            </div>
-            <a
-              href="https://github.com/Krishnanand-10/Isobar.git"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-1.5 rounded-full bg-white px-4 py-1.5 font-mono text-xs font-semibold text-black transition hover:bg-white/90 shadow-lg"
-            >
-              <Github className="h-3.5 w-3.5" />
-              <span>GitHub</span>
-            </a>
-          </div>
-        </nav>
+          </nav>
 
-        {/* Hero Content inside the Cloud Motion Frame */}
-        <div className="relative z-20 mx-auto mt-8 w-full max-w-7xl px-6 md:mt-16 md:px-14 pb-14">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-black/30 px-3.5 py-1 font-mono text-xs text-white backdrop-blur-md mb-4 shadow-lg">
+          {/* Hero Section */}
+          <div className="max-w-3xl my-auto py-4">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-black/40 px-3.5 py-1 font-mono text-xs text-white backdrop-blur-md mb-4 shadow-xl">
               <Activity className="h-3.5 w-3.5 text-sky-300" />
               <span>Zero-Dependency Rust & WebAssembly Pipeline</span>
             </div>
 
-            <h1 className="text-3xl font-bold tracking-tight text-white [text-shadow:0_2px_14px_rgba(15,42,67,0.4)] md:text-5xl font-mono leading-tight">
+            <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white font-mono leading-tight [text-shadow:0_2px_14px_rgba(0,0,0,0.6)]">
               High-Throughput In-Memory Telemetry Engine
             </h1>
 
-            <p className="mt-4 max-w-xl text-sm sm:text-base text-balance text-white/90 font-mono leading-relaxed">
+            <p className="mt-4 max-w-2xl text-sm sm:text-base text-white/90 font-mono leading-relaxed [text-shadow:0_1px_8px_rgba(0,0,0,0.5)]">
               Flat columnar continuous ring buffers and custom 2D KD-Tree / R-Tree spatial indexing.
-              Ingests high-frequency atmospheric & ADS-B avionics streams, answering spatial and temporal queries in sub-millisecond execution times.
+              Ingests high-frequency atmospheric and avionics streams, answering spatial and temporal queries in sub-millisecond execution times.
             </p>
 
-            <div className="mt-7 flex flex-wrap items-center gap-3">
+            <div className="mt-6 flex flex-wrap items-center gap-3">
               <button
                 onClick={scrollToRadar}
-                className="rounded-full bg-white px-6 py-3 font-mono text-xs font-bold text-black transition hover:bg-white/90 shadow-2xl flex items-center gap-2 cursor-pointer"
+                className="rounded-full bg-white px-6 py-2.5 font-mono text-xs font-bold text-black transition hover:bg-white/90 shadow-2xl flex items-center gap-2 cursor-pointer"
               >
                 <Radar className="h-4 w-4 text-sky-600" />
-                <span>Open Geospatial Radar</span>
+                <span>Explore Geospatial Radar</span>
               </button>
               <button
                 onClick={handleRunBenchmark}
-                className="rounded-full border border-white/30 bg-black/30 backdrop-blur-md px-6 py-3 font-mono text-xs font-bold text-white transition hover:bg-white/20 flex items-center gap-2 cursor-pointer shadow-xl"
+                className="rounded-full border border-white/30 bg-black/40 backdrop-blur-md px-6 py-2.5 font-mono text-xs font-bold text-white transition hover:bg-white/20 flex items-center gap-2 cursor-pointer shadow-xl"
               >
                 <Zap className="h-4 w-4 text-amber-300 fill-current" />
                 <span>Run Microsecond Benchmark</span>
               </button>
             </div>
+          </div>
 
-            {/* Live Metrics Strip */}
-            <div className="mt-8 grid grid-cols-3 gap-2.5 max-w-lg font-mono text-xs text-white/90 bg-black/30 border border-white/20 rounded-2xl p-3 backdrop-blur-md shadow-2xl">
-              <div className="flex flex-col">
-                <span className="text-[10px] text-white/70 uppercase">Throughput</span>
-                <span className="font-bold text-emerald-300 text-sm">26.6M p/s</span>
+          {/* Bottom Controls Strip: Cloud Motion Presets & Live Metrics */}
+          <div className="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-3 pb-1">
+            {/* Cloud Motion Presets */}
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-xs text-white/80 hidden sm:inline flex items-center gap-1">
+                <Wind className="h-3.5 w-3.5 text-sky-300" /> Cloud Atmosphere:
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {SHADER_PRESETS.map((preset, idx) => {
+                  const Icon = preset.icon;
+                  return (
+                    <button
+                      key={preset.name}
+                      onClick={() => {
+                        setSelectedPresetIdx(idx);
+                        setShaderSpeed(preset.speed);
+                        setShaderCount(preset.count);
+                      }}
+                      className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-mono text-xs transition-all cursor-pointer backdrop-blur-md ${
+                        selectedPresetIdx === idx
+                          ? 'border-sky-400 bg-black/60 text-sky-300 shadow-[0_0_12px_rgba(56,189,248,0.3)]'
+                          : 'border-white/15 bg-black/30 text-white/80 hover:text-white hover:bg-black/40'
+                      }`}
+                    >
+                      <Icon className="h-3 w-3" />
+                      <span>{preset.name}</span>
+                    </button>
+                  );
+                })}
               </div>
-              <div className="flex flex-col border-x border-white/15 px-2.5">
-                <span className="text-[10px] text-white/70 uppercase">Latency</span>
-                <span className="font-bold text-sky-300 text-sm">&lt; 0.19 ms</span>
+            </div>
+
+            {/* Live Throughput & Latency KPIs */}
+            <div className="flex items-center gap-3 font-mono text-xs text-white/90 bg-black/40 border border-white/20 rounded-xl px-3 py-1.5 backdrop-blur-md shadow-lg">
+              <div>
+                <span className="text-white/60 text-[10px]">INGEST: </span>
+                <span className="font-bold text-emerald-300">26.6M pts/s</span>
               </div>
-              <div className="flex flex-col pl-1">
-                <span className="text-[10px] text-white/70 uppercase">GC Spikes</span>
-                <span className="font-bold text-purple-300 text-sm">0.00 ms (Zero-GC)</span>
+              <div className="border-l border-white/20 pl-3">
+                <span className="text-white/60 text-[10px]">LATENCY: </span>
+                <span className="font-bold text-sky-300">&lt; 0.19 ms</span>
               </div>
             </div>
           </div>
         </div>
-      </CloudMotionFrame>
+      </div>
 
       {/* ============================================================== */}
-      {/* 2. ISOBAR CORE ENGINEERING WORKSPACE                           */}
+      {/* 2. ISOBAR WORKSPACE: RADAR, QUERIES, BENCHMARKS, INSPECTOR    */}
       {/* ============================================================== */}
       <div id="telemetry-section" className="relative z-10 mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
         {/* Navigation Tabs */}

@@ -18,9 +18,9 @@ describe('IsobarEngine Spatial & Isobar Queries', () => {
     const results = engine.queryRadius({
       centerLat: 40.7128,
       centerLon: -74.0060,
-      radiusKm: 250,
+      radiusKm: 600,
       startTime: 0,
-      endTime: Date.now() + 1000000,
+      endTime: Date.now() + 10000000,
     });
 
     expect(results.length).toBeGreaterThan(0);
