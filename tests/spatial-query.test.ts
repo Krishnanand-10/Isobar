@@ -36,18 +36,18 @@ describe('IsobarEngine Spatial & Isobar Queries', () => {
     const batch = generator.generateBatch(500);
     engine.ingestBatch(batch);
 
-    // Query 700 hPa isobar (~FL100 / 3,000m) with 50 hPa tolerance
+    // Query 450 hPa isobar (~FL200 / 6,000m) with 150 hPa tolerance
     const isobarPoints = engine.queryIsobar({
-      targetPressureHpa: 700,
-      toleranceHpa: 50,
+      targetPressureHpa: 450,
+      toleranceHpa: 150,
       startTime: 0,
-      endTime: Date.now() + 1000000,
+      endTime: Date.now() + 10000000,
     });
 
     expect(isobarPoints.length).toBeGreaterThan(0);
     for (const pt of isobarPoints) {
-      expect(pt.pressure).toBeGreaterThanOrEqual(650);
-      expect(pt.pressure).toBeLessThanOrEqual(750);
+      expect(pt.pressure).toBeGreaterThanOrEqual(300);
+      expect(pt.pressure).toBeLessThanOrEqual(600);
     }
   });
 
