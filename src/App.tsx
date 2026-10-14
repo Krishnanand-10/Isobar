@@ -17,7 +17,7 @@ import {
   Moon,
   CloudLightning,
 } from 'lucide-react';
-import { CloudShader } from '@/components/ui/cloud-shader';
+import { CloudShader, CloudShaderDemo } from '@/components/ui/cloud-shader';
 import { TelemetryRadar } from '@/components/telemetry-radar';
 import { QueryPlayground } from '@/components/query-playground';
 import { BenchmarkConsole } from '@/components/benchmark-console';
@@ -73,7 +73,8 @@ export function App() {
   const [generator] = useState(() => new TelemetryGenerator(150));
 
   // Active UI states
-  const [activeTab, setActiveTab] = useState<'radar' | 'isobars' | 'inspector' | 'architecture'>('radar');
+  const [activeTab, setActiveTab] = useState<'radar' | 'isobars' | 'inspector' | 'architecture' | 'clouds'>('radar');
+  const [entireScreenMotion, setEntireScreenMotion] = useState(false);
   const [engineMode, setEngineMode] = useState<'wasm' | 'typescript'>('wasm');
   const [indexingMode, setIndexingMode] = useState<'kdtree' | 'rtree'>('kdtree');
   const [isStreaming, setIsStreaming] = useState(true);
@@ -219,66 +220,88 @@ export function App() {
 
   return (
     <div className="relative min-h-screen w-full bg-slate-950 text-slate-100 selection:bg-sky-500/30 selection:text-sky-200 overflow-x-hidden font-sans">
-      {/* ============================================================== */}
-      {/* CLOUD SHADER MOTION FRAME (Aceternity UI)                      */}
-      {/* ============================================================== */}
-      <div className="relative w-full h-[540px] md:h-[620px] overflow-hidden border-b border-sky-500/20 shadow-2xl">
-        {/* Procedural WebGL Clouds Canvas */}
-        <CloudShader
-          speed={shaderSpeed}
-          count={shaderCount}
-          cloudColor={activePreset.cloudColor}
-          skyTopColor={activePreset.skyTopColor}
-          skyBottomColor={activePreset.skyBottomColor}
-          className="absolute inset-0 h-full w-full"
-        />
+      {/* Optional full-page motion frame backdrop when enabled */}
+      {entireScreenMotion && (
+        <div className="fixed inset-0 z-0 pointer-events-none opacity-35">
+          <CloudShader
+            speed={shaderSpeed * 0.6}
+            count={Math.min(shaderCount, 4)}
+            cloudColor={activePreset.cloudColor}
+            skyTopColor={activePreset.skyTopColor}
+            skyBottomColor={activePreset.skyBottomColor}
+            className="h-full w-full"
+          />
+        </div>
+      )}
 
-        {/* Atmospheric gradient overlay for contrast */}
+      {/* ============================================================== */}
+      {/* CLOUD SHADER MOTION FRAME (Aceternity UI: h-[40rem] w-full)    */}
+      {/* ============================================================== */}
+      <CloudShader
+        speed={shaderSpeed}
+        count={shaderCount}
+        cloudColor={activePreset.cloudColor}
+        skyTopColor={activePreset.skyTopColor}
+        skyBottomColor={activePreset.skyBottomColor}
+        className="h-[40rem] w-full border-b border-sky-500/20 shadow-2xl relative"
+        contentClassName="mx-auto max-w-7xl h-full flex flex-col justify-between px-4 py-6 sm:px-6 lg:px-8"
+      >
+        {/* Atmospheric subtle contrast gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-slate-950 pointer-events-none" />
 
-        {/* Content Overlaid on Cloud Motion Frame */}
-        <div className="relative z-10 mx-auto max-w-7xl h-full flex flex-col justify-between px-4 py-6 sm:px-6 lg:px-8">
-          {/* Top Navbar */}
-          <nav className="flex items-center justify-between border-b border-white/10 pb-4 backdrop-blur-xs">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/20 bg-black/40 backdrop-blur-md shadow-xl">
-                <Compass className="h-5 w-5 text-sky-300 animate-spin" style={{ animationDuration: '30s' }} />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
-                    ISOBAR<span className="text-sky-300">.DB</span>
-                  </span>
-                  <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-white/90 backdrop-blur-md">
-                    v0.1.0-WASM
-                  </span>
-                </div>
-                <p className="font-mono text-[11px] text-white/80 hidden sm:block">
-                  In-Memory Telemetry Engine
-                </p>
-              </div>
+        {/* Top Navbar */}
+        <nav className="relative z-20 flex items-center justify-between border-b border-white/10 pb-4 backdrop-blur-xs">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/20 bg-black/40 backdrop-blur-md shadow-xl">
+              <Compass className="h-5 w-5 text-sky-300 animate-spin" style={{ animationDuration: '30s' }} />
             </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
+                  ISOBAR<span className="text-sky-300">.DB</span>
+                </span>
+                <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-white/90 backdrop-blur-md">
+                  v0.1.0-WASM
+                </span>
+              </div>
+              <p className="font-mono text-[11px] text-white/80 hidden sm:block">
+                In-Memory Telemetry Engine
+              </p>
+            </div>
+          </div>
 
-            <div className="flex items-center gap-2.5">
-              <div className="hidden sm:flex items-center gap-1.5 rounded-full border border-white/20 bg-black/40 backdrop-blur-md px-3 py-1 font-mono text-xs text-white/90 shadow-md">
-                <Cpu className="h-3.5 w-3.5 text-sky-300" />
-                <span>Engine: <strong className="text-sky-300 uppercase">{engineMode}</strong></span>
-              </div>
-              <div className="hidden md:flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-950/50 backdrop-blur-md px-3 py-1 font-mono text-xs text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.2)]">
-                <ShieldCheck className="h-3.5 w-3.5" />
-                <span>Zero-GC Memory</span>
-              </div>
-              <a
-                href="https://github.com/Krishnanand-10/Isobar.git"
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-1.5 rounded-full bg-white px-4 py-1.5 font-mono text-xs font-semibold text-black transition hover:bg-white/90 shadow-lg cursor-pointer"
-              >
-                <Github className="h-3.5 w-3.5" />
-                <span>GitHub</span>
-              </a>
+          <div className="flex items-center gap-2.5">
+            <button
+              onClick={() => setEntireScreenMotion(!entireScreenMotion)}
+              className={`flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-xs transition cursor-pointer backdrop-blur-md shadow-md ${
+                entireScreenMotion
+                  ? 'border-sky-400 bg-sky-500/20 text-sky-200'
+                  : 'border-white/20 bg-black/40 text-white/90 hover:bg-black/60'
+              }`}
+              title="Toggle Cloud Motion Frame across entire application"
+            >
+              <Wind className="h-3.5 w-3.5 text-sky-300" />
+              <span>Full-Screen Motion: <strong className="text-sky-300">{entireScreenMotion ? 'ON' : 'OFF'}</strong></span>
+            </button>
+            <div className="hidden sm:flex items-center gap-1.5 rounded-full border border-white/20 bg-black/40 backdrop-blur-md px-3 py-1 font-mono text-xs text-white/90 shadow-md">
+              <Cpu className="h-3.5 w-3.5 text-sky-300" />
+              <span>Engine: <strong className="text-sky-300 uppercase">{engineMode}</strong></span>
             </div>
-          </nav>
+            <div className="hidden md:flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-950/50 backdrop-blur-md px-3 py-1 font-mono text-xs text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.2)]">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              <span>Zero-GC Memory</span>
+            </div>
+            <a
+              href="https://github.com/Krishnanand-10/Isobar.git"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 rounded-full bg-white px-4 py-1.5 font-mono text-xs font-semibold text-black transition hover:bg-white/90 shadow-lg cursor-pointer"
+            >
+              <Github className="h-3.5 w-3.5" />
+              <span>GitHub</span>
+            </a>
+          </div>
+        </nav>
 
           {/* Hero Section */}
           <div className="max-w-3xl my-auto py-4">
@@ -358,8 +381,7 @@ export function App() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
+      </CloudShader>
 
       {/* ============================================================== */}
       {/* 2. ISOBAR WORKSPACE: RADAR, QUERIES, BENCHMARKS, INSPECTOR    */}
@@ -410,6 +432,17 @@ export function App() {
           >
             <FileCode2 className="h-4 w-4" />
             <span>Algorithmic Rigor</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('clouds')}
+            className={`flex items-center gap-2 border-b-2 px-4 py-3 font-semibold transition-all cursor-pointer ${
+              activeTab === 'clouds'
+                ? 'border-sky-400 text-sky-400 bg-sky-500/10'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Wind className="h-4 w-4" />
+            <span>CloudShader Demo (Aceternity)</span>
           </button>
         </div>
 
@@ -649,6 +682,88 @@ P = P₀ ⋅ (1 - h / 44330)^5.255`}
                   <p className="text-[11px] text-slate-400">
                     Allows real-time extraction and 2D contouring of atmospheric pressure surfaces.
                   </p>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {activeTab === 'clouds' && (
+            <motion.div
+              key="clouds"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-6"
+            >
+              <div className="rounded-2xl border border-sky-500/20 bg-slate-900/60 p-6 backdrop-blur-md space-y-5">
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <h3 className="text-lg font-bold font-mono text-white flex items-center gap-2">
+                      <Wind className="h-5 w-5 text-sky-400" />
+                      Aceternity CloudShader Motion Frame
+                    </h3>
+                    <p className="text-xs font-mono text-slate-400 mt-1">
+                      Pure procedural WebGL motion frame with 4-octave billow FBM noise and horizontal wrapping.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-mono text-xs text-slate-400">Atmosphere:</span>
+                    <div className="flex flex-wrap gap-1">
+                      {SHADER_PRESETS.map((preset, idx) => (
+                        <button
+                          key={preset.name}
+                          onClick={() => {
+                            setSelectedPresetIdx(idx);
+                            setShaderSpeed(preset.speed);
+                            setShaderCount(preset.count);
+                          }}
+                          className={`px-2.5 py-1 text-xs font-mono rounded-lg border transition cursor-pointer ${
+                            selectedPresetIdx === idx
+                              ? 'border-sky-400 bg-sky-500/20 text-sky-300 shadow-[0_0_10px_rgba(56,189,248,0.2)]'
+                              : 'border-slate-800 bg-slate-900 text-slate-400 hover:text-slate-200'
+                          }`}
+                        >
+                          {preset.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Pure CloudShader Demo component: h-[40rem] w-full */}
+                <div className="rounded-xl overflow-hidden border border-sky-500/30 shadow-2xl bg-black">
+                  {selectedPresetIdx === 0 ? (
+                    <CloudShaderDemo />
+                  ) : (
+                    <CloudShader
+                      className="h-[40rem] w-full"
+                      speed={shaderSpeed}
+                      count={shaderCount}
+                      cloudColor={activePreset.cloudColor}
+                      skyTopColor={activePreset.skyTopColor}
+                      skyBottomColor={activePreset.skyBottomColor}
+                    />
+                  )}
+                </div>
+
+                {/* Component Usage */}
+                <div className="rounded-xl border border-slate-800 bg-black/60 p-4 font-mono text-xs space-y-2">
+                  <div className="text-slate-400 font-semibold flex items-center gap-2">
+                    <FileCode2 className="h-4 w-4 text-sky-400" />
+                    <span>Component Implementation (Exact Aceternity UI spec):</span>
+                  </div>
+                  <pre className="text-sky-300 overflow-x-auto p-3 bg-slate-950/80 rounded-lg border border-white/5">
+{`"use client";
+
+import { CloudShader } from "@/components/ui/cloud-shader";
+
+export function CloudShaderDemo() {
+  return (
+    <CloudShader className="h-[40rem] w-full" />
+  );
+}`}
+                  </pre>
                 </div>
               </div>
             </motion.div>

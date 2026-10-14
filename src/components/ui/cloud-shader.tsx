@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 
 export interface CloudShaderProps {
   className?: string;
+  contentClassName?: string;
   children?: React.ReactNode;
   speed?: number;
   count?: number;
@@ -220,6 +221,7 @@ function compile(gl: WebGLRenderingContext, type: number, source: string) {
 
 export const CloudShader: React.FC<CloudShaderProps> = ({
   className,
+  contentClassName,
   children,
   speed = 1,
   count = 6,
@@ -357,12 +359,18 @@ export const CloudShader: React.FC<CloudShaderProps> = ({
         className="pointer-events-none absolute inset-0 h-full w-full"
       />
       {children ? (
-        <div className="relative z-10 flex h-full w-full items-center justify-center">
+        <div className={cn("relative z-10 h-full w-full", contentClassName)}>
           {children}
         </div>
       ) : null}
     </div>
   );
 };
+
+export function CloudShaderDemo() {
+  return (
+    <CloudShader className="h-[40rem] w-full" />
+  );
+}
 
 export default CloudShader;
