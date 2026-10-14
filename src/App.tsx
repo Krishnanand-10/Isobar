@@ -8,7 +8,6 @@ import {
   Zap,
   Radar,
   Terminal,
-  Sparkles,
 } from 'lucide-react';
 import { CloudShader } from '@/components/ui/cloud-shader';
 import { TelemetryRadar } from '@/components/telemetry-radar';
@@ -26,7 +25,7 @@ export function App() {
   const [generator] = useState(() => new TelemetryGenerator(150));
 
   // Active UI states
-  const [viewMode, setViewMode] = useState<'radar' | 'isobars' | 'inspector' | 'screenshot'>('radar');
+  const [viewMode, setViewMode] = useState<'radar' | 'isobars' | 'inspector'>('radar');
   const [engineMode, setEngineMode] = useState<'wasm' | 'typescript'>('wasm');
   const [indexingMode, setIndexingMode] = useState<'kdtree' | 'rtree'>('kdtree');
   const [isStreaming, setIsStreaming] = useState(true);
@@ -326,18 +325,6 @@ export function App() {
                 <Terminal className="h-3.5 w-3.5" />
                 <span>Live Telemetry</span>
               </button>
-
-              <button
-                onClick={() => setViewMode('screenshot')}
-                className={`rounded-lg px-3 py-1.5 font-semibold transition cursor-pointer flex items-center gap-1.5 ${
-                  viewMode === 'screenshot'
-                    ? 'bg-white/20 text-white border border-white/40 shadow-sm'
-                    : 'text-white/60 hover:text-white hover:bg-white/10'
-                }`}
-              >
-                <Sparkles className="h-3.5 w-3.5" />
-                <span>Aceternity Preview</span>
-              </button>
             </div>
 
             {/* Quick Engine KPI readout */}
@@ -445,27 +432,6 @@ export function App() {
               <TelemetryInspector
                 points={matchedPoints}
               />
-            )}
-
-            {viewMode === 'screenshot' && (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between text-xs font-mono text-white/80">
-                  <span>Aceternity CloudShaderHeroDemo Screenshot View</span>
-                  <a
-                    href="https://ui.aceternity.com/components/cloud-shader"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-sky-300 hover:underline"
-                  >
-                    ui.aceternity.com/components/cloud-shader
-                  </a>
-                </div>
-                <img
-                  src="https://assets.aceternity.com/screenshots/fintech-dashboard.webp"
-                  alt="Altitude fintech dashboard preview"
-                  className="w-full rounded-xl border border-white/10 shadow-lg md:rounded-2xl"
-                />
-              </div>
             )}
           </div>
         </div>

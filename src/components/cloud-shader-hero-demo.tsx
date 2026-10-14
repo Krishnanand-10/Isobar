@@ -80,14 +80,11 @@ export function CloudShaderHeroDemo() {
         </p>
       </div>
 
-      {/* dashboard image */}
+      {/* telemetry preview container */}
       <div className="relative z-10 mx-auto mt-12 w-full max-w-6xl px-4 pb-12 md:mt-16 md:px-8">
-        <div className="rounded-2xl border border-white/30 bg-white/20 p-2 shadow-2xl backdrop-blur-md md:rounded-[2rem] md:p-3">
-          <img
-            src="https://assets.aceternity.com/screenshots/fintech-dashboard.webp"
-            alt="Altitude fintech dashboard"
-            className="w-full rounded-xl border border-black/5 shadow-lg md:rounded-3xl"
-          />
+        <div className="rounded-2xl border border-white/30 bg-white/10 p-6 shadow-2xl backdrop-blur-md md:rounded-[2rem] text-center font-mono text-white/90">
+          <p className="text-sm font-semibold">Isobar High-Throughput In-Memory Telemetry Engine</p>
+          <p className="text-xs text-white/60 mt-1">26.6M pts/sec &middot; Flat Columnar Ring Buffers &middot; &lt;0.19 ms query latency</p>
         </div>
       </div>
     </div>
