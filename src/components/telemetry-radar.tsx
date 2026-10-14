@@ -7,7 +7,7 @@ interface TelemetryRadarProps {
   centerLat: number;
   centerLon: number;
   queryRadiusKm: number;
-  onSelectCenter: (lat: number, lon: number) => void;
+  onSelectCenter?: (lat: number, lon: number) => void;
   onRadiusChange?: (radiusKm: number) => void;
   showIsobars: boolean;
   targetPressureHpa: number;
@@ -19,8 +19,6 @@ export const TelemetryRadar: React.FC<TelemetryRadarProps> = ({
   centerLat,
   centerLon,
   queryRadiusKm,
-  onSelectCenter,
-  onRadiusChange,
   showIsobars,
   targetPressureHpa,
 }) => {
@@ -225,28 +223,6 @@ export const TelemetryRadar: React.FC<TelemetryRadarProps> = ({
     };
   }, [points, matchedIds, centerLat, centerLon, queryRadiusKm, radarRangeKm, showIsobars, targetPressureHpa]);
 
-  // Click & drag interaction on canvas
-  const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const cx = canvas.width / 2;
-    const cy = canvas.height / 2;
-    const radiusPx = Math.min(cx, cy) - 20;
-    const pxPerKm = radiusPx / radarRangeKm;
-
-    const deltaXKm = (x - cx) / pxPerKm;
-    const deltaYKm = (cy - y) / pxPerKm;
-
-    const newLat = centerLat + deltaYKm / 111.0;
-    const newLon = centerLon + deltaXKm / (111.0 * Math.cos(centerLat * (Math.PI / 180)));
-
-    onSelectCenter(Number(newLat.toFixed(4)), Number(newLon.toFixed(4)));
-  };
-
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -301,17 +277,9 @@ export const TelemetryRadar: React.FC<TelemetryRadarProps> = ({
           ref={canvasRef}
           width={560}
           height={560}
-          onClick={handleCanvasClick}
           onMouseMove={handleMouseMove}
           onMouseLeave={() => setHoveredPoint(null)}
-          onWheel={(e) => {
-            if (onRadiusChange) {
-              e.preventDefault();
-              const delta = e.deltaY > 0 ? -10 : 10;
-              onRadiusChange(Math.max(10, Math.min(500, queryRadiusKm + delta)));
-            }
-          }}
-          className="cursor-crosshair block max-w-full h-auto"
+          className="cursor-default block max-w-full h-auto select-none"
         />
 
         {/* Hover Tooltip */}
@@ -340,7 +308,7 @@ export const TelemetryRadar: React.FC<TelemetryRadarProps> = ({
         <span className="flex items-center gap-1.5">
           <span className="h-2 w-2 rounded-full bg-purple-400"></span> Isobar Contour ({targetPressureHpa} hPa)
         </span>
-        <span className="text-[11px] text-slate-500">Click anywhere to relocate spatial focus</span>
+        <span className="text-[11px] text-slate-500">Fixed spatial focus (40.7128°N, 74.0060°W)</span>
       </div>
     </div>
   );

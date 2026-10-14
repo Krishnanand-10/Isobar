@@ -254,7 +254,7 @@ export function App() {
         <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
           <button
             onClick={scrollToDashboard}
-            className="rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-sky-700 shadow-lg transition hover:-translate-y-0.5 hover:bg-white/90 cursor-pointer flex items-center gap-2"
+            className="rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-sky-700 shadow-lg transition hover:bg-white/90 cursor-pointer flex items-center gap-2"
           >
             <Radar className="h-4 w-4" />
             <span>Start Live Engine</span>
@@ -344,8 +344,8 @@ export function App() {
             </div>
           </div>
 
-          {/* View Mode Contents */}
-          <div className="rounded-xl border border-black/10 bg-slate-950/80 p-4 shadow-lg md:rounded-3xl md:p-6 overflow-hidden">
+          {/* View Mode Contents (Fixed minimum height to prevent jumping) */}
+          <div className="rounded-xl border border-black/10 bg-slate-950/80 p-4 shadow-lg md:rounded-3xl md:p-6 overflow-hidden min-h-[640px]">
             {viewMode === 'radar' && (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">

@@ -62,7 +62,7 @@ export function CloudShaderHeroDemo() {
         <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
           <a
             href="#radar"
-            className="rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-sky-700 shadow-lg transition hover:-translate-y-0.5 hover:bg-white/90"
+            className="rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-sky-700 shadow-lg transition hover:bg-white/90"
           >
             Start Engine
           </a>
